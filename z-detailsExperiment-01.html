@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>BibleTimeline Creator</title>
+
+	<script src="plugins/tinymce/tinymce.min.js"></script>
+	<script src="/jscript/header.footer.js"></script>
+	<script src="plugins/filesaverjs/fileSaver.js"></script>
+
+
+	<style>
+		body {
+			margin: 0;
+		}
+
+		#head {
+			position: sticky;
+			top: 0;
+			background-color: #fafafa;
+			width: 98vw;
+			border: 1px solid lightgrey;
+			border-top: 0;
+			margin-bottom: 20px;
+			z-index: 10;
+		}
+
+		#head,
+		#title-section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+
+		section {
+			width: 96vw;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		section>h3 {
+			font-style: italic;
+			margin-bottom: 0;
+		}
+
+		#title {
+			width: 100%;
+		}
+
+		textarea {
+			width: 98.5%;
+		}
+
+		textarea,
+		#title {
+			height: 15px;
+			padding: 10px;
+			font-size: 14px;
+			outline: none;
+		}
+
+		#titlewarning {
+			color: red;
+			text-align: ;
+			/*			height: 100%;*/
+			display: block;
+			margin: auto;
+		}
+
+		#title:focus {
+			background-color: lightyellow;
+		}
+
+		.details>span {
+			font-weight: bold;
+			font-style: italic;
+		}
+
+		hr {
+			height: 1px;
+			background-color: #556677;
+			border: ;
+		}
+	</style>
+</head>
+
+<body>
+
+	<section id="head">
+		<div id="titlewarning">!!! Pleaase <strong>ENTER TITLE</strong> in the title text area below !!!</div>
+		<button type="button" onclick="saveDynamicDataToFile();">
+			<h3 id="exempt">CLICK TO SAVE</h3>
+		</button>
+	</section>
+
+
+	<!--DETAILS INPUT SECTION-->
+	<section id="details-section">
+
+		<h3>Details:</h3>
+
+		<div id="details">
+			<hr>
+			<details>
+				<summary>
+					<span title="">Heading:</span><input placeholder="Heading?">
+					<span title="">Row Class:</span><input placeholder="This is for which row class?">
+				</summary>
+				<textarea class="details_text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+			</details>
+			
+		</div>
+
+		<button id="detailcreation" onclick="createdetail()" style="margin-top: 10px;">Add Another Detail</button>
+	</section>
+
+
+</body>
+
+<!--FileSaver Script-->
+<script>
+	var newdetails = `<hr><details><summary><span title="">Heading:</span><input placeholder="Heading?"> <span title="">Row Class:</span><input placeholder="This is for which row class?"></summary><textarea class="details_text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea></details>`
+	function createdetail(){
+		
+//		document.getElementById("details").innerHTML = newdetails;
+		document.getElementById("detailcreation").insertAdjacentHTML('beforebegin', newdetails);
+	}
+	
+	function saveDynamicDataToFile() {
+
+//		var fname = document.getElementById("title").value;
+//		var filename = fname + `.html`;
+//var xyz = htmlhead1 + fname + htmlhead2 + contents + htmlfoot;
+
+		var detail = document.getElementsByTagName("details");
+		var d_length = detail.length;
+
+		    for (i = 0; i < d_length; i++) {
+				
+				var xd = i*2;
+				var yd = xd+1;
+				
+				var d_input = document.getElementsByTagName("input");
+				var d_input1 = d_input[xd].value;
+				alert(d_input1);
+				var d_input2 = d_input[yd].value;
+				alert(d_input2);
+				var d_textarea = document.getElementsByTagName("textarea")[i].value;;
+				alert(d_textarea);
+				
+			}
+//
+//			var blob = new Blob([xyz], {
+//				type: "text/plain;charset=utf-8"
+//			});
+//			saveAs(blob, filename);
+		}
+</script></html>

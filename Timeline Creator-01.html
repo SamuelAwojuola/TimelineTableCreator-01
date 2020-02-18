@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>BibleTimeline Creator</title>
+
+	<script src="plugins/tinymce/tinymce.min.js"></script>
+	<script src="/jscript/header.footer.js"></script>
+	<script src="plugins/filesaverjs/fileSaver.js"></script>
+
+
+	<style>
+		body {
+			margin:0;
+		}
+				
+		#head {
+			position: sticky;
+			top:0;
+			background-color: #fafafa;
+			width: 98vw;
+			border: 1px solid lightgrey;
+			border-top: 0;
+			margin-bottom: 20px;
+			z-index: 10;
+		}
+		
+		#head,
+		#title-section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+		
+		section {
+			width: 96vw;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		section > h3 {
+			font-style: italic;
+			margin-bottom: 0;
+		}
+
+		textarea {
+			height: 15px;
+			width: 95%;
+		}
+		
+		#titlewarning {
+			color: red;
+			text-align:;
+/*			height: 100%;*/
+		    display: block;
+			margin: auto;
+		}
+
+		#title:focus {
+			background-color: lightyellow;
+		}
+	</style>
+</head>
+
+<body>
+
+	<section id="head">
+		<div id="titlewarning">!!! Pleaase <strong>ENTER TITLE</strong> in the title text area below  !!!</div>
+		<button type="button" onclick="saveDynamicDataToFile();"><h3 id="exempt">CLICK TO SAVE</h3></button>
+	</section>
+	
+	<!--TITLE INPUT SECTION-->
+	<section id="title-section">
+		<h3 style="margin-top:0;">Title:</h3><textarea id="title" placeholder="What is the Title of TimelineTable?"></textarea>
+	</section>
+
+	<!--TIMELINE TABLE SECTION-->
+	<section id="timeline-section">
+
+		<h3>Table:</h3>
+		<textarea id="timelinetable" class="timeline" placeholder="">
+
+		    <h1 style="color: red">Please, Ensure that you have entered a title above before saving.</h1>
+		    <ol>
+			    <li><strong>Create Table</strong>
+				   <ul>
+					<li>Just add the timeline table.</li>
+				   </ul>
+			</li>
+			    <li><strong>Edit Code</strong>
+				   <ul>
+					  <li>In the code <em>(go to source code)</em>, add the value attribute to the main timeline rows, e.g., &lt; tr value = "israel"&gt;<br />
+						<div style="width: 100%; background-color: #fbeeb8;">
+							<ul>
+								<li><em>To view the raw code, either</em>
+									<ul>
+										<li><em>Click on <strong>&lt;&gt;</strong> which is the last icon on the lowest menu bar or</em></li>
+										<li><em>Select '<strong>Tools</strong>' and then '<strong>Source code</strong>'&nbsp;</em></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					  </li>
+				   </ul>
+			    </li>
+			    <li><strong>Generate HTML File Code</strong></li>
+		    </ol>
+		    <p>Glory to God and Congratulations, you're done!</p>
+		
+		</textarea>
+	</section>
+
+	<!--DETAILS INPUT SECTION-->
+	<section id="details-section">
+
+		<h3>Details:</h3>
+		<textarea class="timeline"></textarea>
+	</section>
+
+</body>
+
+<!--TinyMCE Script-->
+<script>
+	tinymce.init({
+		selector: "#timelinetable",
+		height: 400,
+		plugins: [
+			"advlist autolink link image lists charmap print preview hr anchor pagebreak save",
+			"searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
+			"table directionality emoticons paste code"
+		],
+		toolbar1: "save undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+		toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor | print preview code ",
+		image_advtab: true,
+
+
+		//Save button call back function
+		save_onsavecallback: function() {
+			var content = tinymce.activeEditor.getContent();
+			//HTML CODE THAT TinyMCE AUTOMATICALLY GENERATES WHICH ARE TO BE REMOVED ON SAVE
+			var tmceTABLEcode1 = /style="border-collapse: collapse; width: \d+(%|px);" border="\d+"/;
+			var tmceTABLEcode2 = /style="border-collapse: collapse; width: \d+(%|px); height: \d+px;" border="\d+"/;
+			var tmceTRcode = /( style="height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode1 = /( style="width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode2 = /( style="width: \d+\.*\d*(%|px); height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode3 = /( style="height: \d+\.*\d*(%|px); width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode4 = /( width="\d+\.*\d*(%|px)*")/g;
+			var content = content
+				.replace(`<table `, `<table class="timelineTable" id="timelineTable" `)
+				.replace(/<tr>/, `<tr class="timelinesummary">`)
+				.replace(/<tr class="/, `<tr class="tdsubhead `)
+				//					.replace(/<tr class="\.+">/, `<tr class="tdsubhead`)
+				.replace(tmceTABLEcode1, ``)
+				.replace(tmceTABLEcode2, ``)
+				.replace(tmceTRcode, ``)
+				.replace(tmceTDcode1, ``)
+				.replace(tmceTDcode2, ``)
+				.replace(tmceTDcode3, ``)
+				.replace(tmceTDcode4, ``)
+				.replace(/&nbsp;/g, ``);
+
+			//CONSOLE LOG JUST THE CONTENT OF THE TinyMCE
+			//				console.log(content);
+			//TO CONSOLE LOG THE CONTENT OF TinyMCE WITH THE HEAD AND FOOT
+			console.log(htmlhead1 + htmlhead2 + content + htmlfoot);
+		}
+	});
+</script>
+
+<!--FileSaver Script-->
+<script>
+	function saveDynamicDataToFile() {
+
+		var title = document.getElementById("title").value;
+		if (title == "") {
+			//			titlewarning:display = block
+			alert("!!! PLEASE ENTER TITLE FOR THE TIMELINE !!!");
+			return false;
+		} else {
+
+			var fname = document.getElementById("title").value;
+			var filename = fname + `.html`;
+
+			var contents = tinymce.activeEditor.getContent();
+			//HTML CODE THAT TinyMCE AUTOMATICALLY GENERATES WHICH ARE TO BE REMOVED ON SAVE
+			var tmceTABLEcode1 = /style="border-collapse: collapse; width: \d+(%|px);" border="\d+"/;
+			var tmceTABLEcode2 = /style="border-collapse: collapse; width: \d+(%|px); height: \d+px;" border="\d+"/;
+			var tmceTRcode = /( style="height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode1 = /( style="width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode2 = /( style="width: \d+\.*\d*(%|px); height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode3 = /( style="height: \d+\.*\d*(%|px); width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode4 = /( width="\d+\.*\d*(%|px)*")/g;
+			var contents = contents
+				.replace(`<table `, `<table class="timelineTable" id="timelineTable" `)
+				.replace(/<tr>/, `<tr class="timelinesummary">`)
+				.replace(/<tr class="/, `<tr class="tdsubhead `)
+				.replace(tmceTABLEcode1, ``)
+				.replace(tmceTABLEcode2, ``)
+				.replace(tmceTRcode, ``)
+				.replace(tmceTDcode1, ``)
+				.replace(tmceTDcode2, ``)
+				.replace(tmceTDcode3, ``)
+				.replace(tmceTDcode4, ``)
+				.replace(/&nbsp;/g, ``);
+
+			//TO SAVE CONTENT OF TinyMCE WITH THE HEAD AND FOOT
+			var xyz = htmlhead1 + fname + htmlhead2 + contents + htmlfoot;
+
+
+			var blob = new Blob([xyz], {
+				type: "text/plain;charset=utf-8"
+			});
+			saveAs(blob, filename);
+		}
+
+	}
+</script>
+</html>

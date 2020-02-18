@@ -1,0 +1,5 @@
+I add "value" to tr in tinyMCE valid elements (https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@valid_elements/)
+This was so that it would not remove the value attribut from the <tr> which I added manually
+
+In testing whther the details addition was working, I has to remove dispaly none from the template.
+I have to restore it, when I am done testing.

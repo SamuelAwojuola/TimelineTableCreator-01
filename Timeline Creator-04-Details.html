@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>BibleTimeline Creator</title>
+
+	<script src="plugins/tinymce/tinymce.min.js"></script>
+	<script type="text/javascript" src="jscript/header.details.footer.js"></script>
+	<script src="plugins/filesaverjs/fileSaver.js"></script>
+
+
+	<style>
+		body {
+			margin: 0;
+		}
+
+		#head {
+			position: sticky;
+			top: 0;
+			background-color: #fafafa;
+			width: 98vw;
+			border: 1px solid lightgrey;
+			border-top: 0;
+			margin-bottom: 20px;
+			z-index: 10;
+		}
+
+		#head,
+		#title-section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+
+		section {
+			width: 96vw;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		section>h3 {
+			font-style: italic;
+			margin-bottom: 0;
+		}
+
+		#title {
+			width: 100%;
+		}
+
+		textarea {
+			width: 98.5%;
+		}
+
+		textarea,
+		#title {
+			height: 15px;
+			padding: 10px;
+			font-size: 14px;
+			outline: none;
+		}
+
+		#titlewarning {
+			color: red;
+			text-align: ;
+			/*			height: 100%;*/
+			display: block;
+			margin: auto;
+		}
+
+		#title:focus {
+			background-color: lightyellow;
+		}
+
+		.details>span {
+			font-weight: bold;
+			font-style: italic;
+		}
+
+		hr {
+			height: 1px;
+			background-color: #556677;
+			border: ;
+		}
+	</style>
+</head>
+
+<body>
+
+	<section id="head">
+		<div id="titlewarning">!!! Pleaase <strong>ENTER TITLE</strong> in the title text area below !!!</div>
+		<button type="button" onclick="saveDynamicDataToFile();">
+			<h3 id="exempt">CLICK TO SAVE</h3>
+		</button>
+	</section>
+
+	<!--TITLE INPUT SECTION-->
+	<section id="title-section">
+		<h3 style="margin-top:0;" title="">Title:</h3><input id="title" placeholder="What is the Title of TimelineTable?">
+	</section>
+
+	<!--TIMELINE TABLE SECTION-->
+	<section id="timeline-section">
+
+		<h3>Table:</h3>
+		<textarea id="timelinetable" class="timeline" placeholder="Hello...">
+
+		</textarea>
+	</section>
+
+	<!--DETAILS INPUT SECTION-->
+	<section id="details-section">
+
+		<h3>Details:</h3>
+
+		<div id="details">
+			<hr>
+			<details>
+				<summary>
+					<span title="">Heading:</span><input class="detailsInput" placeholder="Heading?">
+					<span title="">Row Class:</span><input class="detailsInput" placeholder="This is for which row class?">
+				</summary>
+				<textarea class="details_text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+			</details>
+
+		</div>
+
+		<button id="detailcreation" onclick="createdetail()" style="margin-top: 10px;">Add Another Detail</button>
+	</section>
+
+
+</body>
+
+<!--TinyMCE Script-->
+<script>
+	tinymce.init({
+		selector: "#timelinetable",
+		height: 400,
+		plugins: [
+			"advlist autolink link image lists charmap print preview hr anchor pagebreak ",
+			"searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
+			"table directionality emoticons paste code"
+		],
+		toolbar1: "table | undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect | link unlink anchor | image media | forecolor backcolor | print preview code ",
+		image_advtab: true,
+	});
+</script>
+
+<!--FileSaver Script-->
+<script>
+	//TO CREATE NEW DETAILS INPUTS SECTION
+	var newdetails = `<hr><details><summary><span title="">Heading:</span><input class="detailsInput" placeholder="Heading?"> <span title="">Row Class:</span><input class="detailsInput" placeholder="This is for which row class?"></summary><textarea class="details_text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea></details>`;
+
+	function createdetail() {
+		document.getElementById("detailcreation").insertAdjacentHTML('beforebegin', newdetails);
+	}
+</script>
+<script>
+//TO CREATE THE NEW TIMELINE FILE
+	function saveDynamicDataToFile() {
+
+		var fname = document.getElementById("title").value;
+		if (fname == "") {
+			alert("!!! PLEASE ENTER TITLE FOR THE TIMELINE !!!");
+			return false;
+		} else {
+
+			var filename = fname + `.html`;
+				
+//alert("1");
+				
+				var detail = document.getElementsByTagName("details");
+				var d_length = detail.length;
+
+				var detailsexport = "";
+
+				for (i = 0; i < d_length; i++) {
+
+					var xd = i * 2;
+					var yd = xd + 1;
+
+					var d_input = document.getElementsByTagName("input");
+					var d_input1 = d_input[xd].value;
+//									alert(d_input1);
+					var d_input2 = d_input[yd].value;
+//									alert(d_input2);
+					var d_textarea = document.getElementsByTagName("textarea")[i].value;;
+//									alert(d_textarea);
+
+					detailsexport = detailsexport + detailsclass + [d_input2] + detailsheading + [d_input1] + detailstextarea + [d_textarea];
+
+				}
+				
+				
+
+				var contents = tinymce.activeEditor.getContent();
+				//HTML CODE THAT TinyMCE AUTOMATICALLY GENERATES WHICH ARE TO BE REMOVED ON SAVE--using regEX (regular expressions)
+				var tmceTABLEcode1 = /style="border-collapse: collapse; width: \d+(%|px);" border="\d+"/;
+				var tmceTABLEcode2 = /style="border-collapse: collapse; width: \d+(%|px); height: \d+px;" border="\d+"/;
+				var tmceTRcode = /( style="height: \d+\.*\d*(%|px);")/g;
+				var tmceTDcode1 = /( style="width: \d+\.*\d*(%|px);")/g;
+				var tmceTDcode2 = /( style="width: \d+\.*\d*(%|px); height: \d+\.*\d*(%|px);")/g;
+				var tmceTDcode3 = /( style="height: \d+\.*\d*(%|px); width: \d+\.*\d*(%|px);")/g;
+				var tmceTDcode4 = /( width="\d+\.*\d*(%|px)*")/g;
+				var contents = contents
+					.replace(/<tr class="/g, `<tr class="tdsubhead `)
+					.replace(/<tr class=tdsubhead "/, `<tr class="`)
+					.replace(/<tr/, `<tr class="timelinesummary"`) //This will change the first <tr>
+					.replace(`<table `, `<table class="timelineTable" id="timelineTable" `)
+//					.replace(/<tr value="/, `<tr class="tdsubhead `)
+					.replace(tmceTABLEcode1, ``)
+					.replace(tmceTABLEcode2, ``)
+					.replace(tmceTRcode, ``)
+					.replace(tmceTDcode1, ``)
+					.replace(tmceTDcode2, ``)
+					.replace(tmceTDcode3, ``)
+					.replace(tmceTDcode4, ``)
+					.replace(/&nbsp;/g, ``);
+
+				//TO SAVE CONTENT OF TinyMCE WITH THE HEAD AND FOOT
+				var xyz = htmlhead1 + fname + htmlhead2 + fname + htmlhead3 + contents + htmldetails + detailsexport + detailstextareaclose + htmlfoot;
+
+
+				var blob = new Blob([xyz], {
+					type: "text/plain;charset=utf-8"
+				});
+				saveAs(blob, filename);
+			}
+
+	}
+</script>
+</html>

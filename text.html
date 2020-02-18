@@ -1,0 +1,48 @@
+<script>
+	function saveDynamicDataToFile() {
+
+		var title = document.getElementById("title").value;
+		if (title == "") {
+			//			titlewarning:display = block
+			alert("!!! PLEASE ENTER TITLE FOR THE TIMELINE !!!");
+			return false;
+		} else {
+
+			var fname = document.getElementById("title").value;
+			var filename = fname + `.html`;
+			var userInput = document.getElementById("timeline").value;
+
+			var contents = tinymce.activeEditor.getContent();
+			//HTML CODE THAT TinyMCE AUTOMATICALLY GENERATES WHICH ARE TO BE REMOVED ON SAVE
+			var tmceTABLEcode1 = /style="border-collapse: collapse; width: \d+(%|px);" border="\d+"/;
+			var tmceTABLEcode2 = /style="border-collapse: collapse; width: \d+(%|px); height: \d+px;" border="\d+"/;
+			var tmceTRcode = /( style="height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode1 = /( style="width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode2 = /( style="width: \d+\.*\d*(%|px); height: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode3 = /( style="height: \d+\.*\d*(%|px); width: \d+\.*\d*(%|px);")/g;
+			var tmceTDcode4 = /( width="\d+\.*\d*(%|px)*")/g;
+			var contents = contents
+				.replace(`<table `, `<table class="timelineTable" id="timelineTable" `)
+				.replace(/<tr>/, `<tr class="timelinesummary">`)
+				.replace(/<tr class="/, `<tr class="tdsubhead `)
+				.replace(tmceTABLEcode1, ``)
+				.replace(tmceTABLEcode2, ``)
+				.replace(tmceTRcode, ``)
+				.replace(tmceTDcode1, ``)
+				.replace(tmceTDcode2, ``)
+				.replace(tmceTDcode3, ``)
+				.replace(tmceTDcode4, ``)
+				.replace(/&nbsp;/g, ``);
+
+			//TO SAVE CONTENT OF TinyMCE WITH THE HEAD AND FOOT
+			var xyz = htmlhead1 + fname + htmlhead2 + contents + htmlfoot;
+
+
+			var blob = new Blob([xyz], {
+				type: "text/plain;charset=utf-8"
+			});
+			saveAs(blob, filename);
+		}
+
+	}
+</script>
